@@ -2,6 +2,8 @@ from app.agent.diet_planner_agent import agent
 from app.models.diet_data import DietPlannerData
 from fastapi import HTTPException
 from app.schema.generate_diet_schema import RequestData
+from app.config.redis_connect import client
+import json
 
 MEAL_TYPES = {
     2: ["Breakfast", "Dinner"],
@@ -24,7 +26,7 @@ MEAL_TYPES = {
     ]
 }
 
-def generate_diet_plan(req_data: RequestData, db):
+def generate_diet_plan(req_data: RequestData, db, cache_key):
     
     try:        
         response = agent.invoke({
@@ -48,14 +50,23 @@ def generate_diet_plan(req_data: RequestData, db):
             ]    
         })
         
+        structured_response = response["structured_response"]
+        output_data = structured_response.model_dump()
+        
         new_data = DietPlannerData(
             input_data=req_data.model_dump(),
-            output_data=response["structured_response"]
+            output_data=output_data
         )
         
         db.add(new_data)
         db.commit()
         db.refresh(new_data)
+        
+        client.set(
+            cache_key,
+            json.dumps(output_data),
+            ex=3600    
+        )
         
         return {
                 "data" : response["structured_response"],
