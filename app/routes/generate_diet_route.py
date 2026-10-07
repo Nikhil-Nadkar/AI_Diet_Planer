@@ -14,7 +14,7 @@ router = APIRouter(
 @router.post("/")
 def generate_routes(req_data : RequestData, db : Session = Depends(get_db)):
     
-    input_data= json.dumps(req_data, sort_keys=True)
+    input_data= json.dumps(req_data.model_dump(), sort_keys=True)
     hash_value = hashlib.sha256(
         input_data.encode("utf-8")
     ).hexdigest()
