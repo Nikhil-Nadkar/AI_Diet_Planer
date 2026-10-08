@@ -1,2 +1,11 @@
-/.env
-/venv
+# Python
+backend/venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# React
+frontend/node_modules/
+frontend/dist/

@@ -1,0 +1,43 @@
+services:
+
+  backend:
+    build:
+      context: ./backend
+    container_name: AI_diet_backend
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: diet_frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+  postgres:
+    image: postgres:16
+    container_name: diet_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Nick1234
+      POSTGRES_DB: diet_planner
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: diet_redis
+    volumes:
+      - redis_data:/data
+
+
+volumes:
+  postgres_data:
+  redis_data:

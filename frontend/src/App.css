@@ -1,0 +1,645 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap');
+@import 'tailwindcss';
+
+:root {
+    font-family: 'DM Sans', sans-serif;
+    color: #293c32;
+    background: #f7f8f4;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    min-width: 320px
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit
+}
+
+button {
+    cursor: pointer
+}
+
+.shell {
+    min-height: 100vh
+}
+
+header {
+    height: 68px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 max(calc((100vw - 1150px)/2), 6%);
+    border-bottom: 1px solid #edf0e9
+}
+
+header b {
+    font-size: 21px
+}
+
+header b span {
+    color: #bd905e
+}
+
+header i {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #eaf1e9;
+    color: #256347;
+    vertical-align: middle;
+    margin-right: 7px
+}
+
+header>small,
+.kicker {
+    font-size: 9px;
+    letter-spacing: .13em;
+    color: #78867b;
+    font-weight: 700
+}
+
+main {
+    max-width: 1120px;
+    padding: 0 24px;
+    margin: auto
+}
+
+.hero {
+    min-height: 280px;
+    background: #e9efe5;
+    margin: 0 -24px;
+    padding: 36px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden
+}
+
+.hero>div:first-child>small {
+    color: #78867b;
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: .13em
+}
+
+.hero h1 {
+    font: 500 47px/1.07 'Playfair Display', serif;
+    letter-spacing: -1px;
+    margin: 17px 0 10px
+}
+
+.hero h1 em,
+.blank em {
+    color: #62826d
+}
+
+.hero p,
+.muted {
+    font-size: 12px;
+    color: #78867b
+}
+
+.hero aside {
+    font-size: 10px;
+    color: #637568;
+    margin-top: 17px
+}
+
+.bowl {
+    width: 185px;
+    height: 185px;
+    border: 1px dashed #9dae99;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    position: relative;
+    color: #b98e5b;
+    font-size: 65px
+}
+
+.bowl small {
+    position: absolute;
+    right: -36px;
+    bottom: 4px;
+    font-size: 8px;
+    letter-spacing: .14em;
+    line-height: 1.6
+}
+
+.cols {
+    display: grid;
+    grid-template-columns: 1fr 1.03fr;
+    gap: 20px;
+    padding: 26px 0
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #eaeee8;
+    border-radius: 7px;
+    padding: 23px;
+    box-shadow: 0 5px 20px #293c2d08
+}
+
+.card h2 {
+    font: 500 23px 'Playfair Display', serif;
+    margin: 13px 0 5px
+}
+
+.muted {
+    margin: 0 0 20px;
+    font-size: 11px
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 10px
+}
+
+.fields label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0
+}
+
+.fields label>span {
+    font-weight: 700;
+    font-size: 8px;
+    color: #758078;
+    letter-spacing: .1em
+}
+
+.fields input,
+.fields select,
+.fields textarea {
+    border: 1px solid #e7ebe5;
+    border-radius: 4px;
+    padding: 10px;
+    color: #35463b;
+    font-size: 11px;
+    background: #fff;
+    min-width: 0;
+    width: 100%;
+    outline: none
+}
+
+.fields textarea {
+    resize: vertical
+}
+
+.fields input:focus,
+.fields select:focus,
+.fields textarea:focus {
+    border-color: #87a28e
+}
+
+.fields select {
+    height: 37px
+}
+
+.fields .wide {
+    grid-column: 1/-1
+}
+
+.planlabel {
+    display: block;
+    margin: 20px 0 9px
+}
+
+.choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px
+}
+
+.choice {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #e8ece5;
+    background: white;
+    border-radius: 4px;
+    color: #35463b
+}
+
+.choice.active {
+    border-color: #6d9579;
+    background: #f7faf6
+}
+
+.choice b {
+    font-size: 10px
+}
+
+.choice small {
+    font-size: 8px;
+    color: #909a92
+}
+
+.generate {
+    width: 100%;
+    height: 42px;
+    margin-top: 15px;
+    border: 0;
+    border-radius: 4px;
+    background: #1b6048;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 11px
+}
+
+.generate:disabled {
+    opacity: .65
+}
+
+.disclaimer {
+    text-align: center;
+    font-size: 8px;
+    color: #959f97;
+    margin: 10px 0 0
+}
+
+.results {
+    min-height: 595px
+}
+
+.blank {
+    min-height: 510px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center
+}
+
+.blank>.leaf,
+.blank>.spin {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #f0f4ed;
+    display: grid;
+    place-items: center;
+    color: #78916e;
+    font-size: 26px
+}
+
+.blank h2 {
+    line-height: 1.35
+}
+
+.blank h2 em {
+    font-style: italic
+}
+
+.blank p {
+    max-width: 260px;
+    color: #89948c;
+    font-size: 11px;
+    line-height: 1.7
+}
+
+.resulthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 19px 0 14px
+}
+
+.resulthead h2 {
+    margin: 6px 0
+}
+
+.download {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff;
+    border: 1px solid #dce5dc;
+    color: #356548;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 10px
+}
+
+.days {
+    display: flex;
+    gap: 5px;
+    overflow: auto
+}
+
+.days button {
+    border: 1px solid #e9ede7;
+    background: #fff;
+    border-radius: 4px;
+    color: #718075;
+    min-width: 40px;
+    padding: 7px;
+    font-size: 9px;
+    line-height: 1.5
+}
+
+.days .on {
+    background: #1b6048;
+    color: #fff
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    margin: 14px 0
+}
+
+.stats b {
+    background: #f5f7f2;
+    border: 1px solid #edf0e9;
+    padding: 10px 7px;
+    font-size: 12px;
+    color: #334a3a;
+    white-space: nowrap
+}
+
+.stats small {
+    font-size: 8px;
+    color: #7d8980;
+    font-weight: 400
+}
+
+.meals {
+    display: grid;
+    gap: 8px
+}
+
+.meals article {
+    border: 1px solid #e9ede7;
+    border-radius: 5px;
+    padding: 11px
+}
+
+.mealhead {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 8px
+}
+
+.mealhead>span {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #eff4eb;
+    color: #638265
+}
+
+.mealhead div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px
+}
+
+.mealhead small {
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #87948a
+}
+
+.mealhead b {
+    font-size: 11px;
+    font-weight: 600
+}
+
+.food {
+    border-top: 1px solid #f0f2ee;
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px
+}
+
+.food div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px
+}
+
+.food b {
+    font-size: 9px;
+    font-weight: 500
+}
+
+.food small {
+    font-size: 8px;
+    color: #929c94
+}
+
+.food>small {
+    white-space: nowrap
+}
+
+.tips {
+    padding: 12px;
+    background: #f7f5ed;
+    margin-top: 11px;
+    border-radius: 4px
+}
+
+.tips>b {
+    font-size: 9px;
+    color: #55634f
+}
+
+.tips p {
+    font-size: 8px;
+    color: #7c867b;
+    margin: 7px 0 0;
+    line-height: 1.5
+}
+
+.error {
+    background: #fff4ef;
+    padding: 12px;
+    color: #995c48;
+    font-size: 11px;
+    border-radius: 4px
+}
+
+footer {
+    border-top: 1px solid #e8ece5;
+    padding: 15px 0 22px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #536658
+}
+
+footer i {
+    font-style: normal;
+    font-size: 9px;
+    font-weight: 400;
+    color: #929c94;
+    margin-left: 7px
+}
+
+.spin {
+    animation: spin 1s linear infinite
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+@media(max-width:760px) {
+    .hero {
+        min-height: 240px
+    }
+
+    .hero h1 {
+        font-size: 40px
+    }
+
+    .bowl {
+        transform: scale(.8);
+        margin-right: 10px
+    }
+
+    .cols {
+        grid-template-columns: 1fr;
+        gap: 13px;
+        padding: 16px 0
+    }
+
+    .results {
+        min-height: 0
+    }
+
+    .blank {
+        min-height: 350px
+    }
+}
+
+@media(max-width:520px) {
+    header {
+        height: 58px;
+        padding: 0 17px
+    }
+
+    header>small {
+        font-size: 7px
+    }
+
+    main {
+        padding: 0 13px
+    }
+
+    .hero {
+        margin: 0 -13px;
+        padding: 27px 19px;
+        min-height: 220px
+    }
+
+    .hero h1 {
+        font-size: 36px
+    }
+
+    .hero p {
+        max-width: 240px;
+        font-size: 11px
+    }
+
+    .bowl {
+        position: absolute;
+        right: -50px;
+        top: 65px;
+        transform: scale(.62);
+        opacity: .5
+    }
+
+    .hero aside {
+        font-size: 8px
+    }
+
+    .card {
+        padding: 18px 15px
+    }
+
+    .card h2 {
+        font-size: 21px
+    }
+
+    .stats b {
+        font-size: 11px
+    }
+
+    .resulthead h2 {
+        font-size: 19px
+    }
+}
+/* Clearer meal plan reading scale */
+.results { padding: 26px; }
+.resulthead { margin: 22px 0 17px; }
+.resulthead h2 { font-size: 27px; line-height: 1.2; }
+.resulthead .kicker, .results > .kicker { font-size: 10px; }
+.stats { gap: 9px; margin: 16px 0; }
+.stats b { padding: 12px 10px; font-size: 16px; border-radius: 5px; }
+.stats small { font-size: 10px; }
+.meals { gap: 12px; }
+.meals article { padding: 15px 16px 10px; border-radius: 7px; }
+.mealhead { gap: 11px; margin-bottom: 10px; }
+.mealhead > span { width: 34px; height: 34px; flex: 0 0 34px; font-size: 15px; }
+.mealhead div { gap: 4px; }
+.mealhead small { font-size: 9px; letter-spacing: .12em; }
+.mealhead b { font-size: 15px; line-height: 1.35; }
+.food { padding: 9px 0; gap: 14px; align-items: flex-start; }
+.food div { gap: 4px; min-width: 0; }
+.food b { font-size: 12px; line-height: 1.4; }
+.food small { font-size: 11px; line-height: 1.4; }
+.food > small { flex: 0 0 auto; padding-top: 1px; font-weight: 600; color: #53664f; }
+.tips { padding: 15px 16px; margin-top: 14px; border-radius: 6px; }
+.tips > b { font-size: 12px; }
+.tips p { font-size: 11px; line-height: 1.55; margin-top: 9px; }
+.days { gap: 7px; padding: 2px 0 4px; }
+.days button { min-width: 46px; padding: 8px; font-size: 10px; }
+@media(max-width:760px) {
+  .results { padding: 22px; }
+  .mealhead b { font-size: 14px; }
+}
+@media(max-width:520px) {
+  .results { padding: 19px 15px; }
+  .resulthead h2 { font-size: 23px; }
+  .stats b { padding: 10px 7px; font-size: 14px; }
+  .stats small { font-size: 9px; }
+  .meals article { padding: 12px 11px 8px; }
+  .mealhead b { font-size: 13px; }
+  .food { gap: 8px; }
+  .food b { font-size: 11px; }
+  .food small { font-size: 10px; }
+  .food > small { max-width: 90px; white-space: normal; text-align: right; }
+}
