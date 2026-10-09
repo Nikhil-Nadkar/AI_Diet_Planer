@@ -4,10 +4,10 @@ import { Leaf, Sparkles, ArrowDownToLine, LoaderCircle } from "lucide-react";
 import "./App.css";
 // Types mirror the FastAPI request and the daily/weekly response shapes.
 type P = {
-  age: number;
+  age: number | "";
   gender: string;
-  weight: number;
-  meals: number;
+  weight: number | "";
+  meals: number | "";
   medical_condition: string;
   allergy: string;
   health_goal: string;
@@ -32,25 +32,41 @@ type Plan = {
   days?: D[];
   weekly_guidelines?: string[];
 };
-// Prefilled values make the form useful on first launch; users can edit every field.
-const init: P = {
+// The form starts blank. Sample values are available through the testing toggle.
+const emptyProfile: P = {
+  age: "",
+  gender: "",
+  weight: "",
+  meals: "",
+  medical_condition: "",
+  allergy: "",
+  health_goal: "",
+  food_type: "",
+  ethnicity: "",
+  plan_type: "daily",
+};
+const sampleProfile: P = {
   age: 25,
   gender: "male",
   weight: 78,
   meals: 4,
   medical_condition: "None",
   allergy: "None",
-  health_goal: "Reduce belly fat and build muscle overall",
+  health_goal: "Build muscle",
   food_type: "Veg/Non-veg",
   ethnicity: "Indian",
   plan_type: "daily",
 };
+
+
 // Convert API meal labels such as "Evening_snack" into display text.
 const title = (s: string) =>
   s.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
 function App() {
-  const [p, S] = useState(init),
+  const [p, S] = useState(emptyProfile),
+    [sampleMode, SM] = useState(false),
     [plan, P] = useState<Plan | null>(null),
+    [generatedProfile, GP] = useState<P | null>(null),
     [day, D] = useState(0),
     [busy, B] = useState(false),
     [err, E] = useState("");
@@ -58,17 +74,21 @@ function App() {
   const put = (k: keyof P, v: string | number) => S((x) => ({ ...x, [k]: v }));
   // Submit the profile to the same-origin Vite proxy and validate the returned plan shape.
   async function go() {
+    const submittedProfile = {
+      ...p,
+      age: Number(p.age),
+      weight: Number(p.weight),
+      meals: Number(p.meals),
+    };
     B(true);
     E("");
+    P(null);
     try {
-      const r = await fetch(
-        "/generate/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(p),
-        },
-      );
+      const r = await fetch("/generate/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submittedProfile),
+      });
       if (!r.ok) throw Error((await r.text()) || "Request failed");
       const payload = await r.json();
       // Accept the API response directly, or inside a common data/result envelope.
@@ -76,7 +96,16 @@ function App() {
       if (!Array.isArray(result?.meals) && !Array.isArray(result?.days)) {
         throw Error("The API response did not include meals or days.");
       }
+      if (
+        submittedProfile.plan_type === "weekly" &&
+        result.days?.length !== 7
+      ) {
+        throw Error(
+          "The API returned an incomplete weekly plan. Please try generating it again.",
+        );
+      }
       P(result);
+      GP(submittedProfile);
       D(0);
     } catch (e) {
       E(
@@ -127,7 +156,9 @@ function App() {
       out.setTextColor(255, 255, 255);
       out.setFontSize(20);
       out.text(
-        p.plan_type === "weekly" ? "Day " + (i + 1) + " meal plan" : "Your daily meal plan",
+        generatedProfile?.plan_type === "weekly"
+          ? "Day " + (i + 1) + " meal plan"
+          : "Your daily meal plan",
         left,
         25,
       );
@@ -239,26 +270,42 @@ function App() {
       out.text("Prepared around your goals  |  General wellness guidance", left, 290);
       out.text(String(i + 1).padStart(2, "0"), right, 290, { align: "right" });
     });
-    out.save("nourish-" + p.plan_type + "-plan.pdf");
+    out.save(
+      "nourish-" + (generatedProfile?.plan_type ?? "daily") + "-plan.pdf",
+    );
   }
   // Reusable controlled input; opts switches it to a dropdown.
-  const field = (k: keyof P, label: string, opts?: string[]) => (
+  const field = (
+    k: keyof P,
+    label: string,
+    opts?: string[],
+    placeholder?: string,
+  ) => (
     <label>
       <span>{label}</span>
       {opts ? (
-        <select value={p[k]} onChange={(e) => put(k, e.target.value)}>
+        <select required value={p[k]} onChange={(e) => put(k, e.target.value)}>
+          <option value="" disabled>
+            Select {label.toLowerCase()}
+          </option>
           {opts.map((o) => (
             <option key={o}>{o}</option>
           ))}
         </select>
       ) : (
         <input
+          required
+          type={k === "age" || k === "weight" ? "number" : "text"}
+          min={k === "age" || k === "weight" ? 1 : undefined}
           value={p[k]}
+          placeholder={placeholder}
           onChange={(e) =>
             put(
               k,
               k === "age" || k === "weight" || k === "meals"
-                ? Number(e.target.value)
+                ? e.target.value === ""
+                  ? ""
+                  : Number(e.target.value)
                 : e.target.value,
             )
           }
@@ -273,9 +320,10 @@ function App() {
           <i>
             <Leaf size={18} />
           </i>{" "}
-          nourish<span>.</span>
+          nourish.
         </b>
-        <small>YOUR PERSONAL NUTRITION STUDIO</small>
+        <img src="alembic_logo.png" className="w-32 " />
+        <small>YOUR PERSONAL NUTRITION</small>
       </header>
       <main>
         <section className="hidden">
@@ -309,6 +357,18 @@ function App() {
             <p className="muted">
               A few details help us make a plan that feels like yours.
             </p>
+            <label className="sample-toggle">
+              <input
+                type="checkbox"
+                checked={sampleMode}
+                onChange={(e) => {
+                  const enabled = e.target.checked;
+                  SM(enabled);
+                  S(enabled ? { ...sampleProfile } : { ...emptyProfile });
+                }}
+              />
+              <span>Use sample values (testing)</span>
+            </label>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -316,8 +376,13 @@ function App() {
               }}
             >
               <div className="fields">
-                {field("age", "AGE")}
-                {field("weight", "WEIGHT")}
+                {field("age", "AGE", undefined, "Enter your age in years")}
+                {field(
+                  "weight",
+                  "WEIGHT",
+                  undefined,
+                  "Enter your weight in kg",
+                )}
                 {field("gender", "GENDER", ["male", "female", "other"])}
                 {field("meals", "MEALS PER DAY", ["2", "3", "4", "5", "6"])}
                 {field("food_type", "FOOD PREFERENCE", [
@@ -335,16 +400,26 @@ function App() {
                   "Middle Eastern",
                   "Other",
                 ])}
-                {field("allergy", "ALLERGIES / FOODS TO AVOID")}
-                {field("medical_condition", "MEDICAL CONDITIONS")}
-                <label className="wide">
-                  <span>YOUR HEALTH GOAL</span>
-                  <textarea
-                    rows={3}
-                    value={p.health_goal}
-                    onChange={(e) => put("health_goal", e.target.value)}
-                  />
-                </label>
+                {field(
+                  "allergy",
+                  "ALLERGIES / FOODS TO AVOID",
+                  undefined,
+                  "Enter none if not applicable",
+                )}
+                {field(
+                  "medical_condition",
+                  "MEDICAL CONDITIONS",
+                  undefined,
+                  "Enter none if not applicable",
+                )}
+                {field("health_goal", "HEALTH GOAL", [
+                  "Lose weight",
+                  "Gain weight",
+                  "Maintain weight",
+                  "Build muscle",
+                  "Improve fitness and energy",
+                  "Improve overall health",
+                ])}
               </div>
               <small className="kicker planlabel">YOUR PLAN</small>
               <div className="choices">
@@ -408,10 +483,10 @@ function App() {
                 <div className="resulthead">
                   <div>
                     <small className="kicker">
-                      YOUR {p.plan_type.toUpperCase()} EDITION
+                      YOUR {generatedProfile?.plan_type.toUpperCase()} EDITION
                     </small>
                     <h2>
-                      {p.plan_type === "daily"
+                      {generatedProfile?.plan_type === "daily"
                         ? "A day, well fed."
                         : "A week of feeling good."}
                     </h2>
@@ -420,7 +495,7 @@ function App() {
                     <ArrowDownToLine size={15} /> PDF
                   </button>
                 </div>
-                {p.plan_type === "weekly" && (
+                {generatedProfile?.plan_type === "weekly" && (
                   <nav className="days">
                     {days.map((_, i) => (
                       <button
@@ -474,7 +549,8 @@ function App() {
                 </div>
                 <div className="tips">
                   <b>A few good things to keep in mind</b>
-                  {(p.plan_type === "weekly" && plan.weekly_guidelines?.length
+                  {(generatedProfile?.plan_type === "weekly" &&
+                  plan.weekly_guidelines?.length
                     ? plan.weekly_guidelines
                     : cur.guidelines
                   )
@@ -488,7 +564,7 @@ function App() {
           </section>
         </div>
         <footer>
-          nourish. <i>Small steps, good things.</i>
+          Alcare | Digilabs <i>Small steps, good things.</i>
         </footer>
       </main>
     </div>

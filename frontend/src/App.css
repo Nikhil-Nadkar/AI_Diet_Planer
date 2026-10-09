@@ -165,6 +165,18 @@ main {
     font-size: 11px
 }
 
+.sample-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+    color: #637568;
+    font-size: 11px;
+}
+
+.sample-toggle input {
+    accent-color: #256347;
+}
 .fields {
     display: grid;
     grid-template-columns: 1fr 1fr;
